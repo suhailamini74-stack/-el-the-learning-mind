@@ -18,7 +18,60 @@ header{text-align:center;padding:22px 8px 18px}h1{font-size:34px;margin:0;letter
 form{display:flex;gap:8px;margin-top:12px}textarea{flex:1;resize:vertical;min-height:48px;max-height:130px;border:1px solid var(--line);border-radius:14px;background:#100d1c;color:var(--text);padding:13px;font:inherit}button{border:0;border-radius:14px;background:var(--accent);color:#160f29;font-weight:700;padding:0 18px;font:inherit;min-height:48px}button:disabled{opacity:.45}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.secondary{background:#34294e;color:var(--text);padding:10px 14px;min-height:40px;font-size:14px}
 .small{font-size:12px;color:var(--muted);line-height:1.5}#error{color:#ffb6b6;font-size:13px;min-height:18px;margin-top:8px}
-</style>
+/* EL – FUTURISTIC DESIGN */
+
+:root {
+  --bg: #100b20;
+  --panel: #211735;
+  --accent: #a78bfa;
+  --turquoise: #42e8d5;
+  --text: #f7f1ff;
+  --muted: #b8a9cf;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at top, #342052, #100b20 75%);
+  color: var(--text);
+}
+
+header h1 {
+  color: var(--accent);
+  letter-spacing: 5px;
+  text-shadow: 0 0 20px #a78bfa88;
+}
+
+.panel {
+  background: linear-gradient(145deg, #281c40, #191329);
+  border: 1px solid #70549b;
+  border-radius: 24px;
+  box-shadow: 0 12px 40px #0006;
+}
+
+.msg {
+  border-radius: 20px;
+  box-shadow: 0 4px 18px #0003;
+}
+
+button {
+  background: linear-gradient(135deg, #a78bfa, #42e8d5);
+  color: #160e27;
+  border: none;
+  border-radius: 18px;
+  font-weight: bold;
+  padding: 13px 20px;
+}
+
+textarea {
+  background: #100b20;
+  color: white;
+  border: 1px solid #70549b;
+  border-radius: 18px;
+}
+
+button:active {
+  opacity: 0.8;
+}</style>
 </head>
 <body><main>
 <header><h1>EL</h1><p>The Learning Mind</p><div class="status"><span class="dot" id="dot"></span><span id="status">Bereit – Demo-Modus</span></div></header>
