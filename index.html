@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17122b">
+<title>EL – The Learning Mind</title>
+<style>
+:root{color-scheme:dark;--bg:#100d1c;--panel:#1b1630;--panel2:#251d40;--accent:#a78bfa;--text:#f5f1ff;--muted:#b9b0cf;--line:#3a3155}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#292044 0,#100d1c 55%);color:var(--text);font:16px system-ui,-apple-system,sans-serif;min-height:100vh}
+main{max-width:760px;margin:auto;padding:24px 16px calc(28px + env(safe-area-inset-bottom))}
+header{text-align:center;padding:22px 8px 18px}h1{font-size:34px;margin:0;letter-spacing:.04em}header p{color:var(--muted);margin:6px 0}
+.status{display:inline-flex;align-items:center;gap:8px;color:#cfc4eb;font-size:13px;margin-top:8px}.dot{width:8px;height:8px;border-radius:50%;background:#8b83a5}
+.panel{background:#1b1630dd;border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 12px 32px #0003}
+.notice{font-size:13px;color:#d6cdee;line-height:1.5}.toggleline{display:flex;gap:12px;align-items:flex-start;margin-top:12px}.toggleline input{width:20px;height:20px;accent-color:var(--accent);margin-top:2px}
+#chat{height:min(48vh,480px);min-height:260px;overflow:auto;display:flex;flex-direction:column;gap:12px;padding:4px}
+.msg{max-width:88%;padding:12px 14px;border-radius:16px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45}.user{align-self:flex-end;background:#514078}.el{align-self:flex-start;background:var(--panel2);border:1px solid #40365e}.who{font-size:11px;color:#c8bde3;margin-bottom:4px}
+form{display:flex;gap:8px;margin-top:12px}textarea{flex:1;resize:vertical;min-height:48px;max-height:130px;border:1px solid var(--line);border-radius:14px;background:#100d1c;color:var(--text);padding:13px;font:inherit}button{border:0;border-radius:14px;background:var(--accent);color:#160f29;font-weight:700;padding:0 18px;font:inherit;min-height:48px}button:disabled{opacity:.45}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.secondary{background:#34294e;color:var(--text);padding:10px 14px;min-height:40px;font-size:14px}
+.small{font-size:12px;color:var(--muted);line-height:1.5}#error{color:#ffb6b6;font-size:13px;min-height:18px;margin-top:8px}
+</style>
+</head>
+<body><main>
+<header><h1>EL</h1><p>The Learning Mind</p><div class="status"><span class="dot" id="dot"></span><span id="status">Bereit – Demo-Modus</span></div></header>
+<section class="panel">
+<div class="notice"><strong>Hinweis zur KI-Verbindung:</strong> Wenn du die Verbindung aktivierst, werden deine Nachrichten an den KI-Dienst gesendet. Die API-Nutzung kann kostenpflichtig sein und ist nicht in deinem ChatGPT-Abo enthalten. Standardmäßig bleibt die Verbindung ausgeschaltet.</div>
+<label class="toggleline"><input id="enableAI" type="checkbox"><span><strong>KI-Verbindung einschalten</strong><br><span class="small">Nur aktivieren, wenn du die mögliche API-Abrechnung geprüft hast.</span></span></label>
+</section>
+<section class="panel">
+<div id="chat" aria-live="polite"></div>
+<form id="form"><textarea id="message" placeholder="Schreib EL eine Nachricht …" rows="1"></textarea><button id="send" type="submit">Senden</button></form>
+<div id="error"></div>
+<div class="actions"><button class="secondary" id="speak" type="button">Antwort vorlesen</button><button class="secondary" id="clear" type="button">Chat auf diesem Gerät löschen</button></div>
+<p class="small">Der Chatverlauf wird lokal in diesem Browser gespeichert. Das ist noch kein dauerhaftes, geräteübergreifendes Gedächtnis.</p>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let history=[];
+try{history=JSON.parse(localStorage.getItem("el_chat_v03")||"[]");if(!Array.isArray(history))history=[];}catch{history=[];}
+function save(){try{localStorage.setItem("el_chat_v03",JSON.stringify(history.slice(-100)));}catch{}}
+function render(){const box=$("chat");box.innerHTML="";for(const m of history){const d=document.createElement("div");d.className="msg "+(m.role==="user"?"user":"el");const who=document.createElement("div");who.className="who";who.textContent=m.role==="user"?"DU":"EL";const body=document.createElement("div");body.textContent=m.content;d.append(who,body);box.append(d);}box.scrollTop=box.scrollHeight;}
+function add(role,content){history.push({role,content});history=history.slice(-100);save();render();}
+if(!history.length)add("assistant","Hallo. Ich bin EL. Ich kann mit dir sprechen und Gedanken gemeinsam weiterentwickeln. Im Demo-Modus antworte ich noch nicht mit einem echten KI-Modell.");
+else render();
+$("enableAI").addEventListener("change",()=>{const on=$("enableAI").checked;$("status").textContent=on?"KI-Verbindung aktiviert":"Bereit – Demo-Modus";$("dot").style.background=on?"#7ee0b1":"#8b83a5";});
+$("form").addEventListener("submit",async e=>{
+ e.preventDefault();const text=$("message").value.trim();if(!text)return;
+ $("message").value="";$("error").textContent="";add("user",text);$("send").disabled=true;
+ try{
+  if(!$("enableAI").checked){add("assistant","Ich habe deine Nachricht erhalten. Aktiviere die KI-Verbindung erst, wenn du die möglichen API-Kosten geprüft hast. Bis dahin bin ich im Demo-Modus.");return;}
+  $("status").textContent="EL denkt nach …";
+  const response=await fetch("/.netlify/functions/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:history.slice(-16).map(({role,content})=>({role,content}))})});
+  const data=await response.json();if(!response.ok)throw new Error(data.error||"Die Anfrage ist fehlgeschlagen.");
+  add("assistant",data.reply||"Ich konnte gerade keine Antwort erzeugen.");
+ }catch(err){$("error").textContent=err.message;add("assistant","Die Verbindung hat nicht funktioniert. Bitte prüfe später die Einrichtung der Netlify-Funktion.");}
+ finally{$("send").disabled=false;$("status").textContent=$("enableAI").checked?"KI-Verbindung aktiviert":"Bereit – Demo-Modus";}
+});
+$("speak").addEventListener("click",()=>{const last=[...history].reverse().find(m=>m.role==="assistant");if(!last||!("speechSynthesis"in window))return; speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(last.content);u.lang="de-DE";const voices=speechSynthesis.getVoices();const german=voices.filter(v=>v.lang.toLowerCase().startsWith("de"));const female=german.find(v=>/female|anna|petra|katja|vicki|marlene/i.test(v.name));if(female)u.voice=female; speechSynthesis.speak(u);});
+$("clear").addEventListener("click",()=>{if(confirm("Möchtest du den Chatverlauf auf diesem Gerät wirklich löschen?")){history=[];save();render();add("assistant","Unser Chatverlauf auf diesem Gerät wurde gelöscht.");}});
+</script></body></html>

@@ -1,0 +1,21 @@
+EL – THE LEARNING MIND | VERSION 0.3
+
+Dateien:
+- public/index.html (Webseite)
+- netlify/functions/chat.mjs (Server-Funktion)
+- netlify.toml (Netlify-Konfiguration)
+
+Sicherheit:
+Die Webseite liegt getrennt vom Quellcode der Server-Funktion. Der geheime Schlüssel steht NICHT in einer Datei.
+Die Funktion liest ausschließlich die Netlify-Umgebungsvariable EL_GEHIRN.
+Niemals den API-Schlüssel in index.html schreiben oder hier im Chat senden.
+
+Kosten:
+OpenAI API-Nutzung wird separat vom ChatGPT-Abo abgerechnet und kann Kosten verursachen.
+Die KI-Verbindung in der Oberfläche ist standardmäßig ausgeschaltet. Bitte erst nach Prüfung möglicher Kosten aktivieren.
+Diese Dateien richten keine Zahlung und keine Zahlungsmethode ein.
+
+Veröffentlichung:
+Das Projekt muss als vollständiges Projekt gebaut/veröffentlicht werden, damit Netlify die Funktion erkennt.
+Am einfachsten ist die Verbindung eines GitHub-Repositories mit Netlify.
+Dokumentation: https://docs.netlify.com/build/functions/get-started/
