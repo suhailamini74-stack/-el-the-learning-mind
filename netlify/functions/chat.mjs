@@ -119,7 +119,7 @@ export default async (request) => {
             ...conversation
           ],
           provider: {
-            allow_fallbacks: false
+            allow_fallbacks: true
           }
         })
       }
